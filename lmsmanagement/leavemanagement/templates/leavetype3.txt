@@ -94,19 +94,53 @@
     </ul>
 {% endif %}
 
+fgsdfgdsfgdsfgdfgdfgdfgfdgfdgdfgdf
+
+<h2>Leave Summary</h2>
+
+<h2>Leave Summary</h2>
+
+    {% for leave_type, data in leave_data.items %}
+        <h3>{{ leave_type.leavetype }} Leave</h3>
+        <p>Total Credit: {{ leave_type.default_credit }}</p>
+        <p>Availed Leaves:</p>
+        <ul>
+            {% for availed_leave in data.availed_leaves %}
+                <li>{{ availed_leave.start_date }} to {{ availed_leave.end_date }} - {{ availed_leave.leavedays }} days</li>
+            {% endfor %}
+        </ul>
+        <p>Total Availed Leave Days: 
+            {% with total_availed_days=0 %}
+                {% for availed_leave in data.availed_leaves %}
+                    {% with total_availed_days=total_availed_days|add:availed_leave.leavedays %}
+                    {% endwith %}
+                {% endfor %}
+                {{ total_availed_days }}
+            {% endwith %}
+        </p>
+        <p>Balance Days: {{ data.balance_days }}</p>
+    {% endfor %}
 
 
+fgdsfffffffffgggggggggggggggggggggggggggggggggggggg
 
-
-222222
 {% for leave_type, data in leave_data.items %}
-    <h3>{{ leave_type.leavetype }} Leave</h3>
-    <p>Total Credit: {{ leave_type.default_credit }}</p>
-    <p>Availed Leaves:</p>
-   
-    <p>Total Availed Leave Days: {{ data.total_availed_days }}</p>
-    <p>Balance Days: {{ data.balance_days }}</p>
+<h3>{{ leave_type.leavetype }} Leave</h3>
+<p>Total Credit: {{ leave_type.default_credit }}</p>
+<p>Availed Leaves:</p>
+<ul>
+    {% with total_availed_days=0 %}
+        {% for availed_leave in data.availed_leaves %}
+            <li>{{ availed_leave.start_date }} to {{ availed_leave.end_date }} - {{ availed_leave.leavedays }} days</li>
+            {% with total_availed_days=total_availed_days|add:availed_leave.leavedays %}
+            {% endwith %}
+        {% endfor %}
+    {% endwith %}
+</ul>
+<p>Total Availed Leave Days: {{ total_availed_days }}</p>
+<p>Balance Days: {{ data.balance_days }}</p>
 {% endfor %}
+
 
 </body>
 </html>

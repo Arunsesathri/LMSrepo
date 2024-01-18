@@ -1,0 +1,59 @@
+def leaves(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    leave_types = LeaveType.objects.all()
+
+    # Create a dictionary to store availed leaves and balance days for each leave type
+    leave_data = {}
+
+    for leave_type in leave_types:
+        availed_leaves = LMS.objects.filter(user=user, leave_type=leave_type)
+        availed_days = sum(leave.leavedays for leave in availed_leaves)
+        balance_days = leave_type.default_credit - availed_days
+
+        leave_data[leave_type] = {
+            'availed_leaves': availed_leaves,
+            'balance_days': balance_days,
+            'total_availed_days': availed_days,  # Add total availed days for each leave type
+        }
+
+    if request.method == 'POST':
+        form = Leavesform(request.POST)
+        if form.is_valid():
+            # Associate the user and leave type with the form before saving
+            form.instance.user = user
+            form.save()
+
+            # Redirect to success page
+            return redirect('success')  # Replace 'success' with the name of your success URL
+
+    else:
+        form = Leavesform()
+
+    context = {
+        'user': user,
+        'leave_data': leave_data,
+        'form': form,
+    }
+
+    return render(request, 'leaveapply.html', context)
+
+
+
+
+
+{% for leave_type, data in leave_data.items %}
+    <h3>{{ leave_type.leavetype }} Leave</h3>
+    <p>Total Credit: {{ leave_type.default_credit }}</p>
+    <p>Availed Leaves:</p>
+    <ul>
+        {% for availed_leave in data.availed_leaves %}
+            <li>{{ availed_leave.start_date }} to {{ availed_leave.end_date }} - {{ availed_leave.leavedays }} days</li>
+        {% endfor %}
+    </ul>
+    <p>Total Availed Leave Days: {{ data.total_availed_days }}</p>
+    <p>Balance Days: {{ data.balance_days }}</p>
+{% endfor %}
+
+
+
+

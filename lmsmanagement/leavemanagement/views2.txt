@@ -159,11 +159,12 @@ from .models import LMS  # Make sure this import is correct
 #     return render(request, 'leaveapply.html', context)
 
 
-# this is coprrect
+
 
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import LMS, LeaveType
 from .forms import Leavesform
+from django.contrib.auth.models import User
 
 def leaves(request, user_id):
     user = get_object_or_404(User, id=user_id)
@@ -172,15 +173,18 @@ def leaves(request, user_id):
     # Create a dictionary to store availed leaves and balance days for each leave type
     leave_data = {}
 
+    total_availed_days = 0  # Initialize the total availed days
+
     for leave_type in leave_types:
         availed_leaves = LMS.objects.filter(user=user, leave_type=leave_type)
         availed_days = sum(leave.leavedays for leave in availed_leaves)
         balance_days = leave_type.default_credit - availed_days
 
+        total_availed_days += availed_days  # Accumulate availed days
+
         leave_data[leave_type] = {
             'availed_leaves': availed_leaves,
             'balance_days': balance_days,
-            'total_availed_days': availed_days,  # Add total availed days for each leave type
         }
 
     if request.method == 'POST':
@@ -200,6 +204,7 @@ def leaves(request, user_id):
         'user': user,
         'leave_data': leave_data,
         'form': form,
+        'total_availed_days': total_availed_days,  # Pass total availed days to the template
     }
 
     return render(request, 'leaveapply.html', context)
