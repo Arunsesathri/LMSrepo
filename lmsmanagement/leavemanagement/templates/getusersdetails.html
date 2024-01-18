@@ -1,0 +1,34 @@
+<!-- users.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Details List</title>
+</head>
+<body>
+    <h2>User Details List</h2>
+     
+
+<ul>
+    {% for user_detail in user_details %}
+        <li>
+            <!-- <a href="{% url 'leaveforms' user_detail.user.id %}"> -->
+
+                <a href="{% url 'leaveforms' user_id=user_detail.user.id %}">
+
+
+<!-- Example link in your HTML template -->
+
+
+
+
+                {{ user_detail.user.username }} - {{ user_detail.designation }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+
+
+</body>
+</html>

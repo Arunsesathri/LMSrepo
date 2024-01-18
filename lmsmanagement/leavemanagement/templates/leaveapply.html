@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UserDetails Form</title>
+</head>
+<body>
+    <!-- <h2>Add UserDetails Entry</h2> -->
+
+
+<!-- 
+
+        {% csrf_token %}
+     
+
+        {{ form.as_p }}
+
+
+
+        <button type="submit">Submit</button>
+    </form> -->
+
+
+
+<!-- leaveforms.html -->
+<h1>{{ user.username }} - {{ user.userprofile.designation }} Leave Forms</h1>
+
+<!-- <ul>
+    {% for leave_form in leave_forms %}
+        <li>{{ leave_form.leave_type }} - {{ leave_form.start_date }} to {{ leave_form.end_date }}</li>
+       Add more details as needed 
+    {% endfor %}
+</ul>  -->
+
+
+
+
+
+<!-- Leave Request Form -->
+ <!-- <form method="post" action="{% url 'leaveforms' user_id=user.id %}"> 
+    {% csrf_token %}
+     
+
+    {{ form.as_p }}
+
+    <button type="submit">Submit Leave Request</button>
+</form>  -->
+
+
+
+
+
+
+
+
+
+<!-- leaveapply.html -->
+<!-- <h1>{{ user.username }} - {{ leave_type.leavetype }} Leave Application</h1>
+
+<p>Total Credit: {{ leave_type.default_credit }}</p>
+<p>Availed Leaves:</p>
+<ul>
+    {% for leave in availed_leaves %}
+        <li>{{ leave.start_date }} to {{ leave.end_date }} - {{ leave.leavedays }} days</li>
+    {% endfor %}
+</ul>
+
+<p>Balance Days: {{ balance_days }}</p>
+ -->
+
+
+<!-- 
+ {% for leave_type, data in leave_data.items %}
+ <h1>{{ user.username }} - {{ leave_type.leavetype }} Leave Application</h1>
+
+ <p>Total Credit: {{ leave_type.default_credit }}</p>
+ <p>Availed Leaves:</p>
+ <ul>
+     {% for availed_leave in data.availed_leaves %}
+         <li>{{ availed_leave.start_date }} to {{ availed_leave.end_date }} - {{ availed_leave.leavedays }} days</li>
+     {% endfor %}
+ </ul> -->
+
+
+ <!-- {% endfor %} -->
+
+
+
+
+<form method="post" action="{% url 'leaveforms' user_id=user.id  %}">
+
+
+    {% csrf_token %}
+    <!-- Include your form fields here -->
+    <!-- {{ form.as_p }} -->
+
+ <!-- Fields for the LMS model -->
+ <label for="leave_type">Leave Type:</label>
+ <select name="leave_type" id="leave_type">
+     {% for leave_type in leave_types %}
+         <option value="{{ leave_type.id }}">{{ leave_type.leavetype }}</option>
+     {% endfor %}
+ </select>
+
+ <label for="start_date">Start Date:</label>
+ <input type="date" name="start_date" id="start_date">
+
+ <label for="end_date">End Date:</label>
+ <input type="date" name="end_date" id="end_date">
+
+ <label for="leavedays">Leave Days:</label>
+ <input type="number" name="leavedays" id="leavedays" min="1">
+
+ <label for="reason">Reason:</label>
+ <textarea name="reason" id="reason" rows="4"></textarea>
+
+
+
+
+    <button type="submit">Submit Leave Request</button>
+</form>
+{% if leave_data %}
+    <hr>
+
+    <h2>Leave Types:</h2>
+    <ul>
+        {% for leave_type, data in leave_data.items %}
+            <li>
+                <h3>{{ user.username }} - {{ leave_type.leavetype }} Leave Application</h3>
+
+              <p>Total Credit: {{ leave_type.default_credit }}</p>
+               <!-- <p>Total Availed Leave Days: {{ total_availed_days }}</p>  -->
+
+                <!-- <p>Total Availed Leave Days: {{ total_availed_days }}</p>
+                <p>Balance Days: {{ balance_days }}</p> -->
+                
+
+              <p>Availed Leaves:</p> 
+                <ul>
+                    {% for availed_leave in data.availed_leaves %}
+                        <li> {{ availed_leave.leavedays }} days</li>
+                    {% endfor %}
+                </ul> 
+
+                
+
+                
+                <p>Balance Days: {{ data.balance_days }}</p>
+            </li>
+            <hr>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+
+</body>
+</html>

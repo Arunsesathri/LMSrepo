@@ -1,0 +1,414 @@
+from django.shortcuts import render
+
+# Create your views here.
+# appname/views.py
+from django.shortcuts import render
+from django.http import HttpResponse
+
+def sample(request):
+    return HttpResponse("Hello, this is my app's view!")
+
+
+def success(request):
+    return render(request, 'success.html')
+
+# myapp/views.py
+from django.shortcuts import render
+from .models import UserDetails
+
+# def user1(request):
+#     if request.method == 'POST':
+#         user_id = request.POST['user_id']
+#         designation_id = request.POST['designation_id']
+
+#         UserDetails.objects.create(user_id=user_id, designation_id=designation_id)
+
+#     return render(request, 'users.html')
+
+
+
+
+from .forms import UserDetailsForm
+
+def user1(request):
+    if request.method == 'POST':
+        form = UserDetailsForm(request.POST)
+        if form.is_valid():
+            form.save()
+            # return redirect('userdetails_list')  # Redirect to a success page or another view
+    else:
+        form = UserDetailsForm()
+
+    return render(request, 'users.html', {'form': form})
+
+
+
+
+from .forms import Leavetypeform
+
+
+
+
+def leavetype1(request):
+    if request.method == 'POST':
+        form = Leavetypeform(request.POST)
+        if form.is_valid():
+            form.save()
+            # return redirect('userdetails_list')  # Redirect to a success page or another view
+    else:
+        form = Leavetypeform()
+
+    return render(request, 'leavetype.html', {'form': form})
+
+
+
+
+from .forms import Leavesform
+
+
+# def leaves(request):
+#     if request.method == 'POST':
+#         form = Leavesform(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             # return redirect('userdetails_list')  # Redirect to a success page or another view
+#     else:
+#         form = Leavesform()
+
+#     return render(request, 'leaveapply.html', {'form': form})
+
+
+# have this
+# views.py
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.models import User
+from .models import LMS
+
+# def leaves(request, user_id):
+#     user = get_object_or_404(User, id=user_id)
+
+#     if request.method == 'POST':
+#         form = Leavesform(request.POST)
+#         if form.is_valid():
+#             # Save the form data
+#             form.save()
+#             # Add any additional logic or redirect as needed
+#             return redirect('leaves', user_id=user.id)
+#     else:
+#         form = Leavesform()
+
+#     return render(request, 'leaveapply.html', {'user': user, 'form': form})
+
+
+
+
+
+
+
+
+def  userdetails_list(request):
+     user_details = UserDetails.objects.all()
+     return render(request, 'getusersdetails.html', {'user_details': user_details})
+
+
+
+
+from django.contrib.auth.models import User  # Add this import statement
+
+from django.shortcuts import render, get_object_or_404
+from .models import LMS  # Make sure this import is correct
+
+# def leaves(request, user_id):
+#     user = get_object_or_404(User, id=user_id)
+#     leave_forms = LMS.objects.filter(user=user)
+
+#     # Implement any additional logic for the leaves view here
+
+#     return render(request, 'leaveapply.html', {'user': user, 'leave_forms': leave_forms})
+
+
+# dnot delete
+# views.py
+# from django.shortcuts import render, get_object_or_404
+# from django.contrib.auth.models import User
+
+# def leaves(request, user_id):
+#     user = get_object_or_404(User, id=user_id)
+#     leave_forms = LMS.objects.filter(user=user)  # Replace YourLeaveModel with your actual model
+
+#     if request.method == 'POST':
+#         form = Leavesform(request.POST)
+#         if form.is_valid():
+#             # Save the form data
+#             form.save()
+#             # Add any additional logic or redirect as needed
+#             return redirect('success')  # Replace 'success' with the name of your success URL
+
+#     else:
+#         form = Leavesform()
+
+#     return render(request, 'leaveapply.html', {'user': user, 'leave_forms': leave_forms, 'form': form})
+
+
+
+
+
+
+
+
+# have this
+# from django.shortcuts import render, get_object_or_404, redirect
+# from django.contrib.auth.models import User
+# from .models import LMS, LeaveType
+# from .forms import Leavesform
+
+# def leaves(request, user_id):
+#     user = get_object_or_404(User, id=user_id)
+#     leave_type = get_object_or_404(LeaveType, id=user_id)
+    
+#     # Query availed leaves for the specified leave type
+#     availed_leaves = LMS.objects.filter(user=user, leave_type=leave_type)
+    
+#     # Calculate the balance days
+#     total_credit = leave_type.default_credit
+#     availed_credit = sum(leave.leavedays for leave in availed_leaves)
+#     balance_days = total_credit - availed_credit
+
+#     if request.method == 'POST':
+#         form = Leavesform(request.POST)
+#         if form.is_valid():
+#             # Associate the user and leave type with the form before saving
+#             form.instance.user = user
+#             form.instance.leave_type = leave_type
+#             # Save the form data to the database
+#             form.save()
+#             # Add any additional logic or messages if needed
+#             return redirect('success')  # Replace 'success' with the name of your success URL
+
+#     else:
+#         form = Leavesform()
+
+#     return render(request, 'leaveapply.html', {
+#         'user': user,
+#         'leave_type': leave_type,
+#         'availed_leaves': availed_leaves,
+#         'balance_days': balance_days,
+#         'form': form
+#     })
+
+
+
+
+# views.py
+# from django.shortcuts import render
+from .models import LeaveType, LMS
+# from django.contrib.auth.models import User
+
+# def leaves(request, user_id, leavetype_id):
+#     user = User.objects.get(id=user_id)
+#     leave_type = LeaveType.objects.get(id=leavetype_id)
+
+#     # Calculate availed leave days
+#     availed_leaves = LMS.objects.filter(user=user, leave_type=leave_type)
+
+#     # Calculate balance days based on the allowed credit and availed leaves
+#     total_credit = leave_type.default_credit
+#     availed_days = sum(leave.leavedays for leave in availed_leaves)
+#     balance_days = total_credit - availed_days
+
+#     context = {
+#         'user': user,
+#         'leave_type': leave_type,
+#         'total_credit': total_credit,
+#         'availed_leaves': availed_leaves,
+#         'balance_days': balance_days,
+#     }
+
+#     return render(request, 'leave_application.html', context)
+
+
+
+# def leaves(request, user_id):
+#     user = get_object_or_404(User, id=user_id)
+#     leave_types = LeaveType.objects.all()
+
+#     # Create a dictionary to store availed leaves and balance days for each leave type
+#     leave_data = {}
+
+#     for leave_type in leave_types:
+#         availed_leaves = LMS.objects.filter(user=user, leave_type=leave_type)
+#         availed_days = sum(leave.leavedays for leave in availed_leaves)
+#         balance_days = leave_type.default_credit - availed_days
+
+#         leave_data[leave_type] = {
+#             'availed_leaves': availed_leaves,
+#             'balance_days': balance_days,
+#         }
+
+#     context = {
+#         'user': user,
+#         'leave_data': leave_data,
+#         'form': Leavesform(),  # Initialize an empty form
+#     }
+
+#     return render(request, 'leaveapply.html', context)
+
+
+
+# this is needed for balance days
+
+from django.shortcuts import redirect
+
+# def leaves(request, user_id):
+#     user = get_object_or_404(User, id=user_id)
+#     leave_types = LeaveType.objects.all()
+
+#     # Create a dictionary to store availed leaves and balance days for each leave type
+#     leave_data = {}
+
+#     for leave_type in leave_types:
+#         availed_leaves = LMS.objects.filter(user=user, leave_type=leave_type)
+#         availed_days = sum(leave.leavedays for leave in availed_leaves)
+#         balance_days = leave_type.default_credit - availed_days
+
+#         leave_data[leave_type] = {
+#             'availed_leaves': availed_leaves,
+#             'balance_days': balance_days,
+#         }
+
+#     if request.method == 'POST':
+#         form = Leavesform(request.POST)
+#         if form.is_valid():
+#             # Associate the user and leave type with the form before saving
+#             form.instance.user = user
+#             form.save()
+
+#             # Redirect to success page
+#             return redirect('success')  # Replace 'success' with the name of your success URL
+
+#     else:
+#         form = Leavesform()
+
+#     context = {
+#         'user': user,
+#         'leave_data': leave_data,
+#         'form': form,
+#     }
+
+#     return render(request, 'leaveapply.html', context)
+
+
+
+
+# from django.db.models import Sum
+
+# def leaves(request, user_id):
+#     user = get_object_or_404(User, id=user_id)
+#     leave_types = LeaveType.objects.all()
+
+#     # Create a dictionary to store availed leaves and balance days for each leave type
+#     leave_data = {}
+
+#     for leave_type in leave_types:
+#         availed_leaves = LMS.objects.filter(user=user, leave_type=leave_type)
+#         availed_days = sum(leave.leavedays for leave in availed_leaves)
+#         balance_days = leave_type.default_credit - availed_days
+
+#         leave_data[leave_type] = {
+#             'availed_leaves': availed_leaves,
+#             'balance_days': balance_days,
+#         }
+
+#     # Calculate total availed leave days across all leave types
+#     total_availed_days = sum(data['availed_leaves'].aggregate(Sum('leavedays'))['leavedays__sum'] or 0 for data in leave_data.values())
+
+#     context = {
+#         'user': user,
+#         'leave_data': leave_data,
+#         'total_availed_days': total_availed_days,
+#         'form': Leavesform(),  # Initialize an empty form
+#     }
+
+#     return render(request, 'leaveapply.html', context)
+
+
+
+# have this also
+# def leaves(request, user_id):
+#     user = get_object_or_404(User, id=user_id)
+#     leave_types = LeaveType.objects.all()
+
+#     # Create a dictionary to store availed leaves and balance days for each leave type
+#     leave_data = {}
+
+#     total_availed_days = 0  # Initialize total availed days
+
+#     for leave_type in leave_types:
+#         availed_leaves = LMS.objects.filter(user=user, leave_type=leave_type)
+#         availed_days = sum(leave.leavedays for leave in availed_leaves)
+#         total_availed_days += availed_days  # Update total availed days
+#         balance_days = leave_type.default_credit - availed_days
+
+#         leave_data[leave_type] = {
+#             'availed_leaves': availed_leaves,
+#             'balance_days': balance_days,
+#         }
+
+#     if request.method == 'POST':
+#         form = Leavesform(request.POST)
+#         if form.is_valid():
+#             # Associate the user and leave type with the form before saving
+#             form.instance.user = user
+#             form.save()
+
+#             # Redirect to success page
+#             return redirect('success')  # Replace 'success' with the name of your success URL
+
+#     else:
+#         form = Leavesform()
+
+#     context = {
+#         'user': user,
+#         'leave_data': leave_data,
+#         'form': form,
+#         'total_availed_days': total_availed_days,  # Pass total availed days to the template
+#     }
+
+#     return render(request, 'leaveapply.html', context)
+def leaves(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    leave_types = LeaveType.objects.all()
+
+    # Create a dictionary to store availed leaves and balance days for each leave type
+    leave_data = {}
+
+    for leave_type in leave_types:
+        availed_leaves = LMS.objects.filter(user=user, leave_type=leave_type)
+        availed_days = sum(leave.leavedays for leave in availed_leaves)
+        balance_days = leave_type.default_credit - availed_days
+
+        leave_data[leave_type] = {
+            'availed_leaves': availed_leaves,
+            'balance_days': balance_days,
+        }
+
+    if request.method == 'POST':
+        form = Leavesform(request.POST)
+        if form.is_valid():
+            # Associate the user and leave type with the form before saving
+            form.instance.user = user
+            form.save()
+
+            # Redirect to success page
+            return redirect('success')  # Replace 'success' with the name of your success URL
+
+    else:
+        form = Leavesform()
+
+    context = {
+        'user': user,
+        'leave_data': leave_data,
+        'form': form,
+    }
+
+    return render(request, 'leaveapply.html', context)

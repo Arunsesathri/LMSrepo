@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UserDetails Form</title>
+</head>
+<body>
+    <!-- <h2>Add UserDetails Entry</h2> -->
+
+
+<!-- 
+
+        {% csrf_token %}
+     
+
+        {{ form.as_p }}
+
+
+
+        <button type="submit">Submit</button>
+    </form> -->
+
+
+
+<!-- leaveforms.html -->
+<h1>{{ user.username }} - {{ user.userprofile.designation }} Leave Forms</h1>
+
+<!-- <ul>
+    {% for leave_form in leave_forms %}
+        <li>{{ leave_form.leave_type }} - {{ leave_form.start_date }} to {{ leave_form.end_date }}</li>
+       Add more details as needed 
+    {% endfor %}
+</ul>  -->
+
+<!-- Leave Request Form -->
+ <form method="post" action="{% url 'leaveforms' user_id=user.id %}"> -->
+    {% csrf_token %}
+     
+
+    {{ form.as_p }}
+
+    <button type="submit">Submit Leave Request</button>
+</form> 
+
+
+
+
+
+<!-- leaveapply.html -->
+<h1>{{ user.username }} - {{ leave_type.leavetype }} Leave Application</h1>
+
+<p>Total Credit: {{ leave_type.default_credit }}</p>
+<p>Availed Leaves:</p>
+<ul>
+    {% for leave in availed_leaves %}
+        <li>{{ leave.start_date }} to {{ leave.end_date }} - {{ leave.leavedays }} days</li>
+    {% endfor %}
+</ul>
+
+<p>Balance Days: {{ balance_days }}</p>
+
+<form method="post" action="{% url 'leaveforms' user_id=user.id  %}">
+
+    <!-- <form method="post" action="{% url 'leaveforms' user_id=user.id leavetype_id=leave_type.id %}"> -->
+
+    {% csrf_token %}
+    <!-- Include your form fields here -->
+    {{ form.as_p }}
+    <button type="submit">Submit Leave Request</button>
+</form>
+
+
+</body>
+</html>
